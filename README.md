@@ -100,17 +100,77 @@ Where:
 
 ```python
 
+# Initialize value function
+V = np.zeros(n_states)
 
 # -------------------------------------------------
 # Policy Evaluation Function
 # -------------------------------------------------
 
+def policy_evaluation(env, policy, gamma=0.99, theta=1e-8):
+    """
+    Performs iterative policy evaluation using the Bellman expectation equation.
 
+    Parameters:
+        env    : Gymnasium FrozenLake environment
+        policy : Fixed policy to be evaluated
+        gamma  : Discount factor
+        theta  : Convergence threshold
+
+    Returns:
+        V         : Estimated state-value function
+        iteration : Number of iterations used for convergence
+    """
+
+    V = np.zeros(env.observation_space.n)
+    iteration = 0
+
+    while True:
+        delta = 0
+        new_V = np.copy(V)
+
+        for state in range(env.observation_space.n):
+
+            value = 0
+
+            for action in range(env.action_space.n):
+
+                action_prob = policy[state][action]
+
+                for prob, next_state, reward, done in env.P[state][action]:
+
+                    value += action_prob * prob * (
+                        reward + gamma * V[next_state] * (not done)
+                    )
+
+            new_V[state] = value
+            delta = max(delta, abs(V[state] - new_V[state]))
+
+        V = new_V
+        iteration += 1
+
+        if delta < theta:
+            break
+
+    return V, iteration
 # -------------------------------------------------
 # Display Output
 # -------------------------------------------------
 
-# Change the parameters and observe the results
+V, iterations = policy_evaluation(env, policy, gamma, theta)
+
+print("Name:Jayadev Pallinti")
+print("Register Number: 212223240058")
+print("Number of iterations:", iterations)
+print("\nState-Value Function:")
+print(V)
+
+print("Name:Jayadev Pallinti")
+print("Register Number: 212223240058")
+print("\nState-Value Function as 4x4 Grid:")
+print(np.round(V.reshape(4, 4), 4))
+
+env.close()
 
 ```
 
@@ -119,13 +179,22 @@ Where:
 ## Output
 
 ```text
+Name:Jayadev Pallinti
+Register Number: 212223240058
+Number of iterations: 71
 
-Number of Iterations: 
+State-Value Function:
+[0.0123561  0.01042443 0.01933841 0.00947773 0.01478703 0.
+ 0.03889444 0.         0.03260246 0.08433763 0.13781085 0.
+ 0.         0.17034482 0.43357944 0.        ]
+Name:Jayadev Pallinti
+Register Number: 212223240058
 
 State-Value Function as 4x4 Grid:
-
-
-
+[[0.0124 0.0104 0.0193 0.0095]
+ [0.0148 0.     0.0389 0.    ]
+ [0.0326 0.0843 0.1378 0.    ]
+ [0.     0.1703 0.4336 0.    ]]
 ```
 ---
 
