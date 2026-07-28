@@ -209,10 +209,9 @@ Iterative policy evaluation was implemented successfully using the Gymnasium Fro
 ```text
 
 
+When I changed the environment from 4×4 to 8×8, I noticed that the output matrix became larger and the algorithm took more time to converge, as it had to evaluate more states and a longer path to the goal.
 
-```
-
-
+When I changed the reward values in the environment, the state-value matrix also changed because the expected reward for each state depends directly on the reward structure.
 
 
 ---
